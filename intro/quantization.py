@@ -30,6 +30,8 @@ def plot_signals(freq_cont=0, freq_disc=0, quantization=0, points_per_cycle=5001
         # plots
         plt.step(t_amos, y_amos, 'o:', color=(0, 0.6, 0, 1), where='post', linewidth=2.0, markersize=12)
         plt.plot(t_cont, y_cont, 'b-', linewidth=3.0)
+        plt.xlabel('Tempo [s]')
+        plt.ylabel('Tensão [V]')
         if quantization <= 5:
             for i in range(2 ** quantization):
                 plt.plot([0, 1], [i * dv,  i*dv], color=(0.7, 0.7, 0.7, 0.3), linewidth=1.0)
