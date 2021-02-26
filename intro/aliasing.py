@@ -40,11 +40,15 @@ def plot_signals(freq_cont=0, freq_disc=0, offset=0, points_per_cycle=100):
         t_res = linspace(0.0, 10/freq_disc, num=round((10/freq_disc)*fr*points_per_cycle))
         y_res = np.sin(2 * np.pi * fr * t_res + phase) + offset
         #plots
+        fig, ax = plt.subplots()
         markerline, stemlines, baseline = plt.stem(t_amos, y_amos, linefmt='blue', markerfmt='D',
-                                                   basefmt='black', bottom=0.0, use_line_collection=True)
+                                                   basefmt='black', bottom=0.0, use_line_collection=True, label='Medidas')
         markerline.set_markerfacecolor('none')
-        plt.plot(t_cont, y_cont, '-', color='0.6', label="continuous", linewidth=2.0)
-        plt.plot(t_res, y_res, ':', color=(0, 0, 0.6, 1), label="continuous", linewidth=2.0)
+        plt.plot(t_cont, y_cont, '-', color='0.6', label="sinal", linewidth=2.0)
+        plt.plot(t_res, y_res, ':', color=(0, 0, 0.6, 1), label="reconstrução", linewidth=2.0)
+        plt.xlabel('Tempo [s]')
+        plt.ylabel('Amplitude')
+        legend = ax.legend(loc='best', shadow=True, fontsize='x-large')
         plt.show()
 
 
