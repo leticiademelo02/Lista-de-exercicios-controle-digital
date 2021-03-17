@@ -56,3 +56,5 @@ Thumbs.db
 *.png
 *.gif
 /intro/teste_eduardo.py
+/intro/quantization_resolucao.py
+/ztransform/list_3.py
