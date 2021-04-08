@@ -20,11 +20,11 @@ import numpy as np
 Tsamples = [0.01, 0.16, 0.32, 1]
 
 time_final = 8
-g_s = tf(1, [1, 1, 0])
+g_s = tf(1, [1, 1])
 fig, axs = plt.subplots(2, 2, sharex='col', sharey='row')
 n_cont = round(time_final / 0.005) + 1
 t_cont = linspace(0, time_final, n_cont)
-y_cont, t_c = impulse(g_s, t_cont)
+y_cont, t_c = step(g_s, t_cont)
 
 for Ts in Tsamples:
     idx = Tsamples.index(Ts)
@@ -32,7 +32,7 @@ for Ts in Tsamples:
     time = linspace(0, time_final, n_points)
     g_z = c2d(g_s, Ts, method='zoh')
     print(g_z)
-    y_dis, t_dis = impulse(g_z*1/Ts, time)
+    y_dis, t_dis = step(g_z, time)
     axs[int(np.floor(idx / 2)), idx % 2].plot(t_cont, y_cont, color=[0.5, 0.5, 0.5, 1], label="Contínuo", linewidth=3.0)
     axs[int(np.floor(idx / 2)), idx % 2].step(time, y_dis, color=(0, 0.8, 0, 0.5), label=Ts.__str__(), linewidth=3.0, where='post')
     legend = axs[int(np.floor(idx / 2)), idx % 2].legend(loc='best', shadow=True, fontsize='x-large')
