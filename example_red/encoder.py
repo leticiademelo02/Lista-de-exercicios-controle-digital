@@ -22,11 +22,11 @@ def estimate_vel(w_enc, t_s, window, Np):
     counter = 0
     k = 0
     w_aux = w_enc[0]
-    w_e = []
+    w_e = [0]
     for idx, w in enumerate(w_enc):
-        if w != w_aux:
+        if w < w_aux: #borda de descida
             counter = counter + 1
-        if abs(t_s[idx] - window * (k + 1)) < 0.00001:
+        if abs(t_s[idx] - window * (k + 1)) < 0.000001:
             ang_desloc = counter / Np
             w_e.append(ang_desloc / window)
             counter = 0
@@ -36,11 +36,11 @@ def estimate_vel(w_enc, t_s, window, Np):
     return w_e
 
 
-Ts = 0.02  # 20 ms window
-T_encoder = 0.00005  # for emulating encoder signal
-t_a = 7  # time ending speed up
-t_d = 8  # time starting speed down
-a_f = [10, 50, 100]  # acceleration tests
+Ts = 0.05  # 20 ms window
+T_encoder = 0.000005  # for emulating encoder signal
+t_a = 1  # time ending speed up
+t_d = 6  # time starting speed down
+a_f = [1, 20, 50, 100]  # acceleration tests
 final_time = 9
 n = round(final_time / Ts) + 1
 time_s = linspace(0, final_time, n)
@@ -48,7 +48,7 @@ n_e = round(final_time / T_encoder) + 1
 time_e = linspace(0, final_time, n_e)
 Np = 12  # 3 pulses per revolution * 4 of quadrature
 
-enc_dividers = np.linspace(0, 2*np.pi, 2*Np + 1)
+enc_dividers = np.linspace(0, 1, 2*Np + 1)
 
 accel_signal = np.zeros(n_e)
 a_e = np.zeros(n)
@@ -59,24 +59,25 @@ for a in a_f:
     accel_signal[time_e > t_d] = -(a*t_a)/(final_time-t_d)
     a_e[time_s < t_a] = a
     a_e[time_s > t_d] = -(a*t_a)/(final_time-t_d)
-    vel_signal = integrate.cumtrapz(a_e, time_s, Ts, initial=0)
+    # vel_signal = integrate.cumtrapz(a_e, time_s, Ts, initial=0)
     f_test = integrate.cumtrapz(accel_signal, time_e, T_encoder, initial=0)
-    ang_test = (integrate.cumtrapz(f_test, time_e, T_encoder, initial=0)) % 2*np.pi
+    ang_test = (integrate.cumtrapz(f_test, time_e, T_encoder, initial=0)) % 1
     for i in np.arange(1, 2*Np, 2):
         upperBound = ang_test < enc_dividers[i+1]
         lowerBound = ang_test > enc_dividers[i]
         condition = np.logical_and(lowerBound, upperBound)
         f_encoder[np.where(condition)] = 1
-    # f_encoder = 2.5 * (np.cos(Np * f_test * time_e) / abs(np.cos(Np * f_test * time_e))) + 2.5
-    if DEBUG:
-        fig, axs = plt.subplots()
-        plt.plot(time_e, f_encoder)
-        plt.plot(time_e, ang_test/(2*np.pi))
-        plt.show()
+
+    # if DEBUG:
+    #     fig, axs = plt.subplots()
+    #     plt.plot(time_e, f_encoder)
+    #     plt.plot(time_e, ang_test)
+    #     plt.show()
     w_est = estimate_vel(f_encoder, time_e, Ts, Np)
-    w_est.append(w_est[-1])
+    # w_est.append(w_est[-1])
     if DEBUG:
         fig, axs = plt.subplots()
-        plt.plot(time_s, vel_signal)
-        plt.plot(time_s, w_est, 'r:')
+        plt.plot(time_e, f_test, label='real')
+        plt.plot(time_s, w_est, 'r:', label='estimado')
+        plt.legend()
         plt.show()
