@@ -15,11 +15,12 @@
 from control.matlab import *
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.linalg as lal
 from scipy import integrate
 
 t_cont = 0.00001
 Ts = 0.01
-tfinal = 0.5
+tfinal = 0.42
 tempo = linspace(0, tfinal, int(tfinal/t_cont)+1)
 
 G_motor = tf([12149], [1, 21])
@@ -120,4 +121,80 @@ axs5[1].step(tmf, u_c, color=(0, 1, 0, 0.8), where='post', linewidth=3, label='T
 axs5[1].legend()
 plt.show()
 
+CL_poles = pole(MF_cont)
+CL_zeros = zero(MF_cont)
+CL_gain = dcgain(MF_cont)
 
+print('zpk:')
+
+print(np.round(np.convolve([1, -CL_poles[1]], [1, -CL_poles[0]]), 3))
+print(np.round(np.convolve([1, -CL_poles[2]], [1, -CL_poles[3]]), 3))
+print(np.round(CL_zeros, 3))
+print(np.round(CL_gain, 3))
+
+###################
+# a = tf([1], [1, 2])
+# ad = c2d(a, 0.2, method='zoh')
+# sysD = tf2ss(ad)
+# b = lal.logm(a)
+# print(b)
+# #array([[-1.02571087,  2.05142174],
+# #       [ 0.68380725,  1.02571087]])
+# print(lal.expm(b))         # Verify expm(logm(a)) returns a
+sysD = tf2ss(MF_cont)
+m = sysD.inputs
+n = sysD.states
+#Kudos to harold https://github.com/ilayn/harold/blob/master/harold/_discrete_funcs.py
+# Error message for log based zoh, foh
+logmsg = ('The matrix logarithm returned a complex array, probably due'
+          ' to poles on the negative real axis, and a continous-time '
+          'model cannot be obtained via this method without '
+          'perturbations.')
+
+if np.any(np.abs(lal.eigvals(sysD.A)) < np.sqrt(np.spacing(lal.norm(sysD.A, 1)))):
+        raise ValueError('The system has poles near 0, "zoh" method'
+                         ' cannot be applied.')
+M = np.block([[sysD.A, sysD.B], [np.zeros((m, n)), np.eye(m)]])
+Ms, (sca, _) = lal.matrix_balance(M, permute=False, separate=True)
+
+eM = lal.logm(M) * (sca[:, None] * np.reciprocal(sca)) * (1 / Ts)
+if np.any(eM.imag):
+    raise ValueError(logmsg)
+
+Ac, Bc, Cc, Dc = eM[:n, :n], eM[:n, n:], sysD.C, sysD.D
+sysDnew = StateSpace(Ac, Bc, Cc, Dc)
+newG = ss2tf(Ac, Bc, Cc, Dc)
+print(newG)
+pc = pole(newG)
+zc = zero(newG)
+kc=dcgain(newG)
+print(pc, zc)
+print(kc)
+
+ggg = minreal(sysDnew)
+# pzmap(ggg)
+# plt.show()
+#############
+preal = 37
+pimag = 27j
+aa = np.convolve([1, preal+pimag], [1, preal-pimag])
+# bb = 13.137
+# a2 = 213.435
+# b2 = 96.8843
+tf_1 = tf(aa[2], aa)
+# tf_2 = tf((a2 ** 2 + b2 ** 2), [1, 2*a2, (a2 ** 2 + b2 ** 2)])
+y_ntf, t_ntf = step(tf_1*2340, tempo)
+G_camera = c2d(tf_1, 0.03, method='zoh')
+#
+# # print(G_camera)
+
+tgc = linspace(0, tfinal, int(tfinal/0.03)+1)
+yc, tc = step(newG*2340, tempo)
+ygc, tgc = step(G_camera*2340, tgc)
+fig6, axs6 = plt.subplots()
+axs6.step(tmf, y_mf, color=(0, 0, 1, 0.8), where='post', linewidth=3, label='10 ms')
+axs6.plot(t_ntf, y_ntf, color=(0, 1, 0, 0.8), linewidth=3, label='continuo')
+axs6.step(tgc, ygc, color=(1, 0, 0, 0.8), where='post', linewidth=3, label='30 ms')
+# axs6.plot(t_ntf, y_ntf, color=(1, 0, 0, 0.8), linewidth=3, label='30 ms')
+axs6.legend()
+plt.show()
