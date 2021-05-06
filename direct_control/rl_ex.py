@@ -78,8 +78,8 @@ for i, tdisc in enumerate(Ts):
     # rlocus(Cd*Gd)
     # plt.plot(dd_pole.real, dd_pole.imag, 'rs')
     # plt.show(block=False)
-    Hs = feedback(Cd*Gd/kk, 1)
-    Ud = Cd/(kk*(1+Cd*Gd))
+    Hs = feedback(Cd*0.6*Gd/kk, 1)
+    Ud = Cd*0.6/(kk*(1+Cd*Gd))
     vt_d = linspace(0, int(t_final/tdisc)*tdisc, int(t_final / tdisc) + 1)
     ydd, tdd = step(Hs, vt_d)
     udd, tdd = step(Ud, vt_d)
@@ -87,5 +87,5 @@ for i, tdisc in enumerate(Ts):
     axs_plot[1].step(tdd, udd, color=color_format[i], where='post', label=tdisc, linewidth=4)
 
 axs_plot[0].legend(loc='best', shadow=True, fontsize='x-large')
-axs_plot[1].legend(loc='best', shadow=True, fontsize='x-large')
+# axs_plot[1].legend(loc='best', shadow=True, fontsize='x-large')
 plt.show()
