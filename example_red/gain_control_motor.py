@@ -182,6 +182,7 @@ aa = np.convolve([1, preal+pimag], [1, preal-pimag])
 # a2 = 213.435
 # b2 = 96.8843
 tf_1 = tf(aa[2], aa)
+print(tf_1)
 # tf_2 = tf((a2 ** 2 + b2 ** 2), [1, 2*a2, (a2 ** 2 + b2 ** 2)])
 y_ntf, t_ntf = step(tf_1*2340, tempo)
 G_camera = c2d(tf_1, 0.03, method='zoh')
