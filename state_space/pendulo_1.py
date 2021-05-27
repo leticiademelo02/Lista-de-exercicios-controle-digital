@@ -177,3 +177,5 @@ auxB = np.matmul(ss_d.B, Nbar)
 newB = np.concatenate((auxB, auxB), axis=0)
 aug_ss2 = ss(all_A, newB, [1, 0, 0, 0], [0], tt_s)
 print(aug_ss2)
+
+
