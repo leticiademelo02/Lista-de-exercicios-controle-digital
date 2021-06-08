@@ -36,8 +36,8 @@ newPhi = np.round(alfa*rounded_ss.A, 4)
 print(newPhi)
 newGamma = np.round(alfa*rounded_ss.B, 4)
 print(newGamma)
-Q = [[0.25, 0, 0], [0, 1, 0], [0, 0, 0]]
-R = [[0.04, 0], [0, 0.01]]
+Q = [[1, 0, 0], [0, 0, 0], [0, 0, 0]]
+R = [[2, 0], [0, 0.1]]
 
 
 X, L, G = dare(newPhi, newGamma, Q, R)
