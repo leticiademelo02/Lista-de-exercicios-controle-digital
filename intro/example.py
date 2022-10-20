@@ -24,7 +24,7 @@ sysd = c2d(sys, dT, method='zoh')
 sysd_i = c2d(sys, dT, method='impulse')
 
 y_imp, T = impulse(sys, T, 0)
-y_imp_d, T = impulse(sysd_i/dT, T, 0)
+y_imp_d, T = impulse(sysd_i, T, 0)
 
 yout, T = step(sys, T, 0)
 yd, T = step(sysd, T, 0)
