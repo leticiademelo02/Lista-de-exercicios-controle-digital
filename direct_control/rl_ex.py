@@ -25,10 +25,10 @@ fig, axs_plot = plt.subplots(1, 2)
 G_cont = tf([1], [1, 1, 0])
 T_MA_cont = feedback(G_cont, 1)
 U_MA_cont = 1/(G_cont+1)
-yc, tc = step(T_MA_cont, vt_cont)
-uc, tc = step(U_MA_cont, vt_cont)
-axs_plot[0].plot(tc, yc, color=[0.5, 0.5, 0.5, 0.5], label='cont_K=1', linewidth=4)
-axs_plot[1].plot(tc, uc, color=[0.5, 0.5, 0.5, 0.5], label='cont_K=1', linewidth=4)
+# yc, tc = step(T_MA_cont, vt_cont)
+# uc, tc = step(U_MA_cont, vt_cont)
+# axs_plot[0].plot(tc, yc, color=[0.5, 0.5, 0.5, 0.5], label='cont_K=1', linewidth=4)
+# axs_plot[1].plot(tc, uc, color=[0.5, 0.5, 0.5, 0.5], label='cont_K=1', linewidth=4)
 
 zeta = 0.5
 wd = np.pi
@@ -51,12 +51,12 @@ for i, tdisc in enumerate(Ts):
     print("desired pole:")
     dd_pole = np.exp(des_pole*tdisc)
     print(dd_pole)
-    # fig, axs = plt.subplots()
-    # rlocus(Gd)
-    # plt.plot(dd_pole.real, dd_pole.imag, 'rs')
-    # plt.show(block=False)
+    fig, axs = plt.subplots()
+    rlocus(Gd)
+    plt.plot(dd_pole.real, dd_pole.imag, 'rs')
+    plt.show(block=False)
     #Choosing arbitralery zc = closer to the smaller positive real root
-    zc = np.min(pp)-0.1
+    zc = np.min(pp)-0.05
     phase = np.arctan2(dd_pole.imag, dd_pole.real-zc)
     gain_c = 1/np.abs(dd_pole-zc)
     for zeros in zz:
@@ -74,10 +74,10 @@ for i, tdisc in enumerate(Ts):
     print(zc, pc, gain_c)
     Cd = tf([gain_c, -gain_c*zc], [1, -pc], tdisc)
     print(Cd)
-    # fig, axs = plt.subplots()
-    # rlocus(Cd*Gd)
-    # plt.plot(dd_pole.real, dd_pole.imag, 'rs')
-    # plt.show(block=False)
+    fig, axs = plt.subplots()
+    rlocus(Cd*Gd)
+    plt.plot(dd_pole.real, dd_pole.imag, 'rs')
+    plt.show(block=False)
     Hs = feedback(Cd*0.6*Gd/kk, 1)
     Ud = Cd*0.6/(kk*(1+Cd*Gd))
     vt_d = linspace(0, int(t_final/tdisc)*tdisc, int(t_final / tdisc) + 1)

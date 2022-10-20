@@ -161,6 +161,8 @@ d_C = K
 d_D = [0]
 G_d = ss2tf(d_A, d_B, d_C, d_D, tt_s)
 print(G_d)
+print(G_d.pole())
+
 
 #####
 ref = np.deg2rad(2)

@@ -25,19 +25,19 @@ import numpy as np
 # Inputs of the blade
 # TODO: Read txt from database and que the constants.
 c_tu = 0.12
-c_pu = 0.04
-diameter = 11
+c_pu = 0.05
+diameter = 9
 # https://m-selig.ae.illinois.edu/props/volume-1/plots/apcsf_11x4.7_static_ct.png
 # https://m-selig.ae.illinois.edu/props/volume-1/plots/apcsf_11x4.7_static_cp.png
 # drone
-mass = 1.2
+mass = 5
 des_control = 0.4  # 35% for hover, it can be 40, but as there are some approximations, I am keeping at 35.
 v_bat = 11.1  # 3S
-n_motors = 4
+n_motors = 8
 # Motor
 # https://br.banggood.com/IFlight-XING-E-Pro-2207-1800KV-3-6S-or-2450KV-2750KV-2-4S-Brushless-Motor-for-RC-Drone-FPV-Racing-p-1518196.html?cur_warehouse=CN&ID=47980&rmmds=search
-KV = 1800  # rpm/V
-I_max = -1  # max current
+KV = 1400  # rpm/V
+I_max = 37  # max current
 R_motor = 0.0815
 # Enviroment
 # input
@@ -88,7 +88,7 @@ omega = np.sqrt(2 * mass * g / (air_density * n_motors * ct_br * np.pi * (radius
 print(omega * 30 / np.pi)
 # ideal torque
 Q = 0.5 * air_density * cq_br * np.pi * (radius ** 5) * (omega ** 2)
-Aq = r_est * Q / (kt * v_bat)
+Aq = r_est * Q / (kt * v_bat) # Q = Kt*(vBAT*Aq)/r_est
 # motor BEMF
 Q_bemf = kw * omega
 Bq = Q_bemf / v_bat
