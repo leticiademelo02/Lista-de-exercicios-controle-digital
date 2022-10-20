@@ -57,13 +57,14 @@ Thumbs.db
 *.gif
 /intro/teste_eduardo.py
 /intro/teste_ex1.py
+/intro/quantization_resolucao.py
 /ztransform/frac_parcial.py
 /ztransform/zoh_list.py
 /ztransform/Exercicio_sala.py
 /ztransform/list_3.py
 /ztransform/simpson_list.py
 prova/
-Project/
+/Project/
 project2/
 /prova/
 /project2/
