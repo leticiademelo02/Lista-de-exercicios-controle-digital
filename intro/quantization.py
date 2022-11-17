@@ -12,6 +12,8 @@
 #   These codes are used in DIGITAL CONTROL classes. You may use and study by them, however use with caution!
 #
 ################################################################################################################
+#   Author: Letícia de Melo
+#   Last-Update: 17.11.2021
 
 from control.matlab import *
 import matplotlib.pyplot as plt
