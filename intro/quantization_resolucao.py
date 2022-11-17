@@ -19,9 +19,9 @@ import numpy as np
 
 RMSE = []
 bits = [2, 4, 8, 10, 12, 16]
-freqs = [1, 2, 10, 30]
-graph = ['m--', 'b.-', 'r:', 'g']
-label = [' 1 Hz', ' 3 Hz', '10 Hz', '30 Hz']
+freqs = [10, 30]
+graph = ['m--', 'b.-']
+label = ['10 Hz', '30 Hz']
 fig, ax = plt.subplots()
 for freq_disc in freqs:
     for N in bits:
