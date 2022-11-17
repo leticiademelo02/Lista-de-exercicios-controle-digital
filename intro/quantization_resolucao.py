@@ -13,6 +13,10 @@
 #
 ################################################################################################################
 
+
+#   Author: Letícia de Melo
+#   Last-Update: 17.11.2021
+
 from control.matlab import *
 import matplotlib.pyplot as plt
 import numpy as np
